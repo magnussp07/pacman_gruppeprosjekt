@@ -22,6 +22,15 @@ class PacMan:
         self.row = row
         self.col = col
 
+        
+        self.x = col * TILE_SIZE
+        self.y = row * TILE_SIZE
+        
+        self.speed = 2
+        
+        self.dx = 0
+        self.dy = 0
+        
         self.frames_idle = self.getImageSpriteList(0, 0, 4)
         # Bildet vi skal vise til å starte med er idle:
         self.frames = self.frames_idle
@@ -30,8 +39,42 @@ class PacMan:
 
         # Om vi vil speile bildet:
         self.venstre = False
-
-
+        
+    def update(self, board):
+        
+        keys = pg.key.get_pressed()
+        
+        if keys[pg.K_LEFT]:
+            self.dx = -self.speed
+            self.dy = 0
+            self.venstre = True
+        
+        elif keys[pg.K_RIGHT]:
+            self.dx = self.speed
+            self.dy = 0
+            self.venstre = False
+        
+        elif keys[pg.K_UP]: 
+            self.dx = 0
+            self.dy = - self.speed
+        
+        elif keys[pg.K_DOWN]:
+            self.dx = 0
+            self.dy = self.speed
+            
+        next_x = self.x + self.dx
+        next_y = self.y + self.dy
+        
+        next_col = (next_x + TILE_SIZE // 2) // TILE_SIZE
+        next_row = (next_y + TILE_SIZE // 2) // TILE_SIZE
+        
+        if board.is_road(next_col, next_row):
+            self.x = next_x
+            self.y = next_y
+        
+        self.col = self.x // TILE_SIZE
+        self.row = self.y // TILE_SIZE
+    
 
     def draw(self, surface):
 
@@ -40,13 +83,16 @@ class PacMan:
         
         # Speiler bildet hvis det trengs:
         if self.venstre:
-            current_frame_image = pg.transform.flip(current_frame_image, True, False)
+            current_frame_image = pg.transform.flip(
+            current_frame_image,
+            True,
+            False
+        )
 
         # Sørg for at vi tegner midt i "Tile":
         mid = TILE_SIZE // 2
         rect = current_frame_image.get_rect()
-        rect.center = (self.col * TILE_SIZE + mid , self.row * TILE_SIZE + mid)
-
+        rect.center = (self.x + mid, self.y + mid)
         # Blit images på skjermen (der self.rect befinner seg):
         surface.blit(current_frame_image, rect)
 

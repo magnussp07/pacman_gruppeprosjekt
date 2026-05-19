@@ -30,6 +30,7 @@ while running:
 
     # Tegn objektene våre:
     pacman.draw(vindu)
+    pacman.update(board)
 
 
     # Har alltid disse med til slutt:
