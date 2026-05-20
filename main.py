@@ -2,6 +2,7 @@ import pygame as pg
 from constants import *
 from board import Board
 from pacman import PacMan
+from ghosts import *
 
 pg.init()
 board = Board()
@@ -10,6 +11,13 @@ clock = pg.time.Clock()
 
 
 pacman = PacMan(3, 4)
+pinky = Ghost(3,5, 0, 5)
+blinky = Ghost(3, 7, 0, 4)
+inky = Ghost(3,9,0,6)
+clyde = Ghost(3,11,0,7)
+
+objects = (pacman, pinky, blinky, inky, clyde)
+
 
 running = True
 while running:
@@ -29,6 +37,8 @@ while running:
 
 
     # Tegn objektene våre:
+    for obj in objects:
+        obj.draw(vindu)
     pacman.draw(vindu)
     pacman.update(board)
 
