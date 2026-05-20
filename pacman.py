@@ -28,8 +28,8 @@ class PacMan:
         
         self.speed = 2
         
-        self.dx = 0
-        self.dy = 0
+        self.dir_x = 0
+        self.dir_y = 0 
         
         self.frames_idle = self.getImageSpriteList(0, 0, 4)
         # Bildet vi skal vise til å starte med er idle:
@@ -40,40 +40,67 @@ class PacMan:
         # Om vi vil speile bildet:
         self.venstre = False
         
+    def is_centered(self):
+            return (self.x % TILE_SIZE == 0 and self.y % TILE_SIZE == 0)
+        
     def update(self, board):
         
         keys = pg.key.get_pressed()
         
-        if keys[pg.K_LEFT]:
-            self.dx = -self.speed
-            self.dy = 0
-            self.venstre = True
+        if self.is_centered():
         
-        elif keys[pg.K_RIGHT]:
-            self.dx = self.speed
-            self.dy = 0
-            self.venstre = False
-        
-        elif keys[pg.K_UP]: 
-            self.dx = 0
-            self.dy = - self.speed
-        
-        elif keys[pg.K_DOWN]:
-            self.dx = 0
-            self.dy = self.speed
+            if keys[pg.K_LEFT]:
+                self.dir_x = -1
+                self.dir_y = 0
+                
+                self.venstre = True
             
-        next_x = self.x + self.dx
-        next_y = self.y + self.dy
-        
-        next_col = (next_x + TILE_SIZE // 2) // TILE_SIZE
-        next_row = (next_y + TILE_SIZE // 2) // TILE_SIZE
-        
+            elif keys[pg.K_RIGHT]:
+                self.dir_x = 1 
+                self.dir_y = 0
+                self.venstre = False
+            
+            elif keys[pg.K_UP]: 
+                self.dir_x = 0 
+                self.dir_y = -1 
+            
+            elif keys[pg.K_DOWN]:
+                self.dir_x = 0 
+                self.dir_y = 1 
+            
+        # Beregner neste posisjon
+        next_x = self.x + self.dir_x * self.speed
+        next_y = self.y + self.dir_y * self.speed
+
+        # Finn hvilken tile vi beveger oss mot
+        next_col = next_x // TILE_SIZE
+        next_row = next_y // TILE_SIZE
+
+        if self.dir_x > 0:  #høyre bevegelse
+                next_col = (next_x + TILE_SIZE - 1) // TILE_SIZE
+        elif self.dir_x < 0:  # venstre bevegelse
+                next_col = next_x // TILE_SIZE
+        else:
+                next_col = self.x // TILE_SIZE
+            
+        if self.dir_y > 0:  # nedover bevegelse
+                next_row = (next_y + TILE_SIZE - 1) // TILE_SIZE
+        elif self.dir_y < 0:  # oppover vegelse
+                next_row = next_y // TILE_SIZE
+        else:
+                next_row = self.y // TILE_SIZE
+
+            #  om neste tile er gyldig
         if board.is_road(next_col, next_row):
             self.x = next_x
             self.y = next_y
+                
+                # Oppdater grid-posisjon når  sentrert
+            if self.is_centered():
+                self.col = self.x // TILE_SIZE
+                self.row = self.y // TILE_SIZE
+                
         
-        self.col = self.x // TILE_SIZE
-        self.row = self.y // TILE_SIZE
     
 
     def draw(self, surface):
