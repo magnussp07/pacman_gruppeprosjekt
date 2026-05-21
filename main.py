@@ -39,8 +39,7 @@ while running:
     # Tegn objektene våre:
     for obj in objects:
         obj.draw(vindu)
-    pacman.draw(vindu)
-    pacman.update(board)
+        obj.update(board)
 
 
     # Har alltid disse med til slutt:

@@ -19,6 +19,14 @@ class Ghost:
 
         # Om vi vil speile bildet:
         self.venstre = False
+
+
+        self.x = col * TILE_SIZE
+        self.y = row * TILE_SIZE
+        
+        self.speed = 2
+        self.dx = 1
+        self.dy = 0
         
 
     def getImageSpriteList(self, x_start, y_start, num_frames) -> list[pg.Surface]:
@@ -32,6 +40,24 @@ class Ghost:
             frame = full_image.subsurface(pg.Rect(x_start + i * self.frame_width, y_start, self.frame_width, self.frame_width))
             frames.append(frame)
         return frames
+
+    def update(self, board):
+        
+        next_x = self.x + self.dx
+        next_y = self.y + self.dy
+        
+        next_col = (next_x + TILE_SIZE // 2) // TILE_SIZE
+        next_row = (next_y + TILE_SIZE // 2) // TILE_SIZE
+        
+        if board.is_road(next_col, next_row):
+            self.x = next_x
+            self.y = next_y
+        elif board.is_road(next_col+1, next_row):
+            self.x = next_x + 1
+            self.y = next_y
+        
+        self.col = self.x // TILE_SIZE
+        self.row = self.y // TILE_SIZE
 
     def draw(self, surface):
 
