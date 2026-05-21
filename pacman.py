@@ -11,6 +11,7 @@ class PacMan:
         
         # Dele opp bildet i frames, som lagres i en liste:
         frames = []
+        
         for i in range(num_frames):
             # Bildene er kvadratiske - bruker frame widht både som høye og bredde:
             frame = full_image.subsurface(pg.Rect(x_start + i * frame_width, y_start, frame_width, frame_width))
@@ -36,9 +37,16 @@ class PacMan:
         self.frames = self.frames_idle
         # Om vi vil ha animasjon som går gjennom frames:
         self.current_frame = 0
+        
+        self.animation_timer = 0
+        self.animation_speed = 0.15
 
         # Om vi vil speile bildet:
         self.venstre = False
+        
+        # om vi skal bytte bilde 
+        
+        
         
     def is_centered(self):
             return (self.x % TILE_SIZE == 0 and self.y % TILE_SIZE == 0)
@@ -46,6 +54,7 @@ class PacMan:
     def update(self, board):
         
         keys = pg.key.get_pressed()
+        #BEvegelse kode
         
         if self.is_centered():
         
@@ -99,7 +108,19 @@ class PacMan:
             if self.is_centered():
                 self.col = self.x // TILE_SIZE
                 self.row = self.y // TILE_SIZE
+        
+        #animasjonskode 
+        if self.dir_x != 0 or self.dir_y != 0:
+            self.animation_timer += self.animation_speed
+            
+            if self.animation_timer >= 2:
+                self.animation_timer = 0
                 
+            self.current_frame = int(self.animation_timer)
+            
+        else: 
+            self.current_frame = 0
+            
         
     
 
