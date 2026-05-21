@@ -32,6 +32,8 @@ class PacMan:
         self.dir_x = 0
         self.dir_y = 0 
         
+        self.rotation = 0
+        
         self.frames_idle = self.getImageSpriteList(0, 0, 4)
         # Bildet vi skal vise til å starte med er idle:
         self.frames = self.frames_idle
@@ -39,7 +41,7 @@ class PacMan:
         self.current_frame = 0
         
         self.animation_timer = 0
-        self.animation_speed = 0.15
+        self.animation_speed = 0.3
 
         # Om vi vil speile bildet:
         self.venstre = False
@@ -61,21 +63,22 @@ class PacMan:
             if keys[pg.K_LEFT]:
                 self.dir_x = -1
                 self.dir_y = 0
-                
-                self.venstre = True
+                self.rotation = 180
             
             elif keys[pg.K_RIGHT]:
                 self.dir_x = 1 
                 self.dir_y = 0
-                self.venstre = False
+                self.rotation = 0
             
             elif keys[pg.K_UP]: 
                 self.dir_x = 0 
                 self.dir_y = -1 
+                self.rotation = 90 
             
             elif keys[pg.K_DOWN]:
                 self.dir_x = 0 
                 self.dir_y = 1 
+                self.rotation = -90
             
         # Beregner neste posisjon
         next_x = self.x + self.dir_x * self.speed
@@ -117,7 +120,7 @@ class PacMan:
                 self.animation_timer = 0
                 
             self.current_frame = int(self.animation_timer)
-            
+        
         else: 
             self.current_frame = 0
             
@@ -130,11 +133,10 @@ class PacMan:
         current_frame_image = self.frames[self.current_frame]
         
         # Speiler bildet hvis det trengs:
-        if self.venstre:
-            current_frame_image = pg.transform.flip(
-            current_frame_image,
-            True,
-            False
+    
+        current_frame_image = pg.transform.rotate(
+        current_frame_image,
+        self.rotation,
         )
 
         # Sørg for at vi tegner midt i "Tile":
